@@ -1,0 +1,16 @@
+{
+  "name": "dotenv-sync",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.2.1"
+  },
+  "bin": {
+    "sync": "./bin.js"
+  }
+}
