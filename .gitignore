@@ -1,4 +1,4 @@
 node_modules/
-.env-unencrypted.json
-.env-secretKey
 .env
+.unencrypted.env
+.secretKey.env

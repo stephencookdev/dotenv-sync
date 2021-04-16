@@ -22,23 +22,24 @@ const config = ({ encoding = "utf8", debug = false } = {}) => {
   const fs = require("fs");
   const path = require("path");
   const { decrypt } = require("./encryption");
+  const envParse = require("./envParse");
 
   const rootDir = process.cwd();
   const dotenvPath = path.resolve(rootDir, ".env");
-  const secretKeyPath = path.resolve(rootDir, ".env-secretKey");
-  const encryptedEnvJsonPath = path.resolve(rootDir, ".env-encrypted");
-  const unencryptedEnvJsonPath = path.resolve(rootDir, ".env-unencrypted.json");
+  const secretKeyPath = path.resolve(rootDir, ".secretKey.env");
+  const encryptedEnvJsonPath = path.resolve(rootDir, ".encrypted.env");
+  const unencryptedEnvJsonPath = path.resolve(rootDir, ".unencrypted.env");
 
   const parsed = parse(fs.readFileSync(dotenvPath, { encoding }), { debug });
   const secretKey = fs.readFileSync(secretKeyPath, "utf8");
 
-  const unencryptedEnvJson = JSON.parse(
+  const unencryptedEnvJson = envParse.parse(
     decrypt(secretKey, fs.readFileSync(encryptedEnvJsonPath, "utf8"))
   );
 
   fs.writeFileSync(
     unencryptedEnvJsonPath,
-    JSON.stringify(unencryptedEnvJson, null, 2)
+    envParse.stringify(unencryptedEnvJson, null, 2)
   );
 
   setProcessVars(parsed, debug);
