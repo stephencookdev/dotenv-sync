@@ -14,34 +14,31 @@ const setProcessVars = (config, debug) => {
   });
 };
 
-const config = ({ encoding = "utf8", debug = false }) => {
+const config = ({ encoding = "utf8", debug = false } = {}) => {
   if (process.env.NODE_ENV === "production") {
     return dotenv.config({ encoding, debug });
   }
 
   const fs = require("fs");
   const path = require("path");
-  const crypto = require("crypto");
+  const { decrypt } = require("./encryption");
 
   const rootDir = process.cwd();
   const dotenvPath = path.resolve(rootDir, ".env");
   const secretKeyPath = path.resolve(rootDir, ".env-secretKey");
-  const encryptedEnvJsonPath = path.resolve(rootDir, ".env-encrypted.json");
+  const encryptedEnvJsonPath = path.resolve(rootDir, ".env-encrypted");
   const unencryptedEnvJsonPath = path.resolve(rootDir, ".env-unencrypted.json");
 
   const parsed = parse(fs.readFileSync(dotenvPath, { encoding }), { debug });
   const secretKey = fs.readFileSync(secretKeyPath, "utf8");
 
   const unencryptedEnvJson = JSON.parse(
-    crypto.privateDecrypt(
-      secretKey,
-      fs.readFileSync(encryptedEnvJsonPath, "utf8")
-    )
+    decrypt(secretKey, fs.readFileSync(encryptedEnvJsonPath, "utf8"))
   );
 
   fs.writeFileSync(
     unencryptedEnvJsonPath,
-    JSON.stringify(unencryptedEnvJsonPath, null, 2)
+    JSON.stringify(unencryptedEnvJson, null, 2)
   );
 
   setProcessVars(parsed, debug);
@@ -56,7 +53,7 @@ const config = ({ encoding = "utf8", debug = false }) => {
     );
   }
 
-  const syncedEnv = unencryptedEnvJson[groupTarget] || {};
+  const syncedEnv = parse(unencryptedEnvJson[groupTarget] || "");
 
   setProcessVars(syncedEnv, debug);
 
