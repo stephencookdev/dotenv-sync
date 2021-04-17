@@ -57,6 +57,20 @@ echo "Check the shared 1Password, in the item titled 'space jam website'" > .dot
 
 In production-mode, `dotenv-sync` defers entirely to `dotenv`, making it effectively zero in additional bundle size.
 
+## Security
+
+### Is this package secure?
+
+This library encrypts your ENV vars using 256-bit AES.
+
+For reference, this is the same encryption [that 1Password uses](https://1password.com/security). In other words, using this package is cryptographically as secure as storing all of your ENV vars directly in a 1Password vault.
+
+### Why not just commit the ENV vars to source?
+
+If your repo is public, then this is obviously a bad idea, as anyone can e.g. log into your database.
+
+If your repo is private, then this is still a bad idea. All it takes is one person to get hacked, and suddenly the hacker has access to all of your databases. By using this package, even if someone hacks their way to your source-code, they won't be able to decrypt your ENV vars.
+
 ## Update ENV vars
 
 To update ENV vars locally just for you, then you should just add to your `.env` file.
