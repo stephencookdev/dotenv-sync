@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require("fs");
 const path = require("path");
-const { encrypt, generateKey } = require("./encryption");
+const { encrypt, decrypt, generateKey } = require("./encryption");
 const envParse = require("./envParse");
 const { log, logLevel } = require("./log");
 
@@ -57,7 +57,7 @@ if (shouldPull) {
     decrypt(secretKey, fs.readFileSync(encryptedEnvPath, "utf8"))
   ).env;
 
-  const newEncryptedFile = envParse.stringify(newUnencryptedEnv, secretKey);
+  const newEncryptedFile = envParse.stringify(unencryptedEnv, secretKey);
   fs.writeFileSync(unencryptedEnvPath, newEncryptedFile);
 } else {
   fs.writeFileSync(
@@ -112,7 +112,7 @@ could, for example, add the following to your .env file:
 \`\`\`
 _ENV_GROUP_TARGET=${exampleGroupTarget}
 \`\`\`
-to target the "${exampleGroupTarget}" group
+to use all of the ENV vars in the "${exampleGroupTarget}" group
 `.trim()
     : ""
 }`.trim()
