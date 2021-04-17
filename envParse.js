@@ -20,7 +20,7 @@ function parse(str) {
   const headerReg = /#\s*\n#\s*([A-za-z]+)\s*\n#/g;
 
   const envGroups = str
-    .replaceAll(internalCommentRegex, "")
+    .replace(internalCommentRegex, "")
     .split(headerReg)
     .map((s) => s.trim())
     .filter(Boolean);
