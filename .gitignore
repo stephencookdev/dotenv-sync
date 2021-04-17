@@ -1,4 +1,4 @@
 node_modules/
-.env
-.unencrypted.env
-.secretKey.env
+*.env
+!.env-encrypted
+test.js

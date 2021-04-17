@@ -3,35 +3,45 @@ const fs = require("fs");
 const path = require("path");
 const { encrypt, generateKey } = require("./encryption");
 const envParse = require("./envParse");
+const { log, logLevel } = require("./log");
 
 const rootDir = process.cwd();
-const secretKeyPath = path.resolve(rootDir, ".secretKey.env");
-const encryptedEnvJsonPath = path.resolve(rootDir, ".encrypted.env");
-const unencryptedEnvJsonPath = path.resolve(rootDir, ".unencrypted.env");
+const encryptedEnvPath = path.resolve(rootDir, ".env-encrypted");
+const unencryptedEnvPath = path.resolve(rootDir, ".env-unencrypted.env");
 
-let secretKey;
-if (fs.existsSync(secretKeyPath)) {
-  secretKey = fs.readFileSync(secretKeyPath, "utf8");
-} else {
-  console.log("No secret key exists! Creating one now...");
-  secretKey = generateKey();
-  fs.writeFileSync(secretKeyPath, secretKey);
-}
+const shouldInit = process.argv.includes("--init");
 
 let unencryptedEnv;
-if (fs.existsSync(unencryptedEnvJsonPath)) {
-  unencryptedEnv = fs.readFileSync(unencryptedEnvJsonPath, "utf8");
+if (fs.existsSync(unencryptedEnvPath)) {
+  if (shouldInit) {
+    logLevel("error", `Cannot init, ${unencryptedEnvPath} already exists!`);
+    process.exit(1);
+  }
+
+  unencryptedEnv = fs.readFileSync(unencryptedEnvPath, "utf8");
 } else {
-  console.log("No .unencrypted.env exists! Creating one now...");
-  unencryptedEnv = envParse.stringify({
-    Local: "EXAMPLE=1",
-    Development: "EXAMPLE=2",
-  });
-  fs.writeFileSync(unencryptedEnvJsonPath, unencryptedEnv);
+  if (!shouldInit) {
+    logLevel(
+      "error",
+      `No ${unencryptedEnvPath} exists! Run this command with '--init' if you're trying to initialise the repo`
+    );
+    process.exit(1);
+  }
+
+  log(`Creating an unencrypted .env file at ${unencryptedEnvPath}`);
+  const secretKey = generateKey();
+  unencryptedEnv = envParse.stringify(
+    {
+      Local: "EXAMPLE=1",
+      Development: "EXAMPLE=2",
+    },
+    secretKey
+  );
+  fs.writeFileSync(unencryptedEnvPath, unencryptedEnv);
 }
-const unencryptedEnvJson = envParse.parse(unencryptedEnv);
+const { env: unencryptedParsedEnv, secretKey } = envParse.parse(unencryptedEnv);
 
 fs.writeFileSync(
-  encryptedEnvJsonPath,
-  encrypt(secretKey, envParse.stringify(unencryptedEnvJson))
+  encryptedEnvPath,
+  encrypt(secretKey, envParse.stringify(unencryptedParsedEnv, { __omit: true }))
 );
