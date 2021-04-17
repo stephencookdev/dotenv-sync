@@ -41,6 +41,18 @@ A sample `.gitignore` you might want to use is as follows:
 !.env-encrypted
 ```
 
+### Custom error messaging
+
+When new teammates attempt to run your codebase, if they haven't created a `.env-unencrypted.env` file, then they will hit an error.
+
+If you want to customise this error message, so your teammates know where to get the file from, you can create a `.dotenv-sync.missing-secret-key` message in your workspace.
+
+For example:
+
+```bash
+echo "Check the shared 1Password, in the item titled 'space jam website'" > .dotenv-sync.missing-secret-key
+```
+
 ## Bundle size
 
 In production-mode, `dotenv-sync` defers entirely to `dotenv`, making it effectively zero in additional bundle size.

@@ -42,15 +42,25 @@ const setProcessVars = (config, debug) => {
   });
 };
 
-const enforceFilesExists = (files) => {
-  const missingFiles = files.filter((f) => !fs.existsSync(f));
+const enforceFilesExists = (files, missingSecretKeyMessagePath) => {
+  const missingFiles = Object.entries(files).filter(
+    ([, f]) => !fs.existsSync(f)
+  );
 
   if (missingFiles.length) {
+    const useCustomNotice =
+      fs.existsSync(missingSecretKeyMessagePath) &&
+      missingFiles.length === 1 &&
+      missingFiles[0][0] === "unencryptedEnvPath";
+    const notice = useCustomNotice
+      ? fs.readFileSync(missingSecretKeyMessagePath)
+      : missingFilesNotice;
+
     logLevel(
       "error",
       `Missing the following required files:\n${missingFiles
-        .map((f) => ` - ${f}`)
-        .join("\n")}\n\n` + missingFilesNotice
+        .map(([, f]) => ` - ${f}`)
+        .join("\n")}\n\n` + notice
     );
     process.exit(1);
   }
@@ -61,8 +71,15 @@ const config = ({ encoding = "utf8", debug = false } = {}) => {
   const dotenvPath = path.resolve(rootDir, ".env");
   const encryptedEnvPath = path.resolve(rootDir, ".env-encrypted");
   const unencryptedEnvPath = path.resolve(rootDir, ".env-unencrypted.env");
+  const missingSecretKeyMessagePath = path.resolve(
+    rootDir,
+    ".dotenv-sync.missing-secret-key"
+  );
 
-  enforceFilesExists([encryptedEnvPath, unencryptedEnvPath]);
+  enforceFilesExists(
+    { encryptedEnvPath, unencryptedEnvPath },
+    missingSecretKeyMessagePath
+  );
 
   let parsed = {};
   try {
