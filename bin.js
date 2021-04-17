@@ -45,3 +45,26 @@ fs.writeFileSync(
   encryptedEnvPath,
   encrypt(secretKey, envParse.stringify(unencryptedParsedEnv, { __omit: true }))
 );
+
+if (shouldInit) {
+  log(
+    `
+Your repo has been initialised! 🥳
+Great work. You have a couple more things to do:
+
+1. Make sure your \`.env-encrypted\` file is not in your .gitignore
+2. Make sure your \`.env-unencrypted.env\` file **IS** in your .gitignore (**DO NOT COMMIT THIS FILE!**)
+3. Share the following snippet with your team via. 1Password, or LastPass, etc.
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~ Create a file called .env-unencrypted.env and put me in it ~~#
+#~~    Make sure to not commit this file to source control!    ~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~secretKey::::${secretKey}
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+`.trim()
+  );
+}
