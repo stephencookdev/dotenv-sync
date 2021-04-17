@@ -32,8 +32,10 @@ if (fs.existsSync(unencryptedEnvPath)) {
   const secretKey = generateKey();
   unencryptedEnv = envParse.stringify(
     {
-      Local: "EXAMPLE=1",
-      Development: "EXAMPLE=2",
+      __base: "SHARED_VAR=shared",
+      Development: "MY_VAR=1",
+      Production: "MY_VAR=2",
+      MySpecialGroup: "MY_VAR=3",
     },
     secretKey
   );
