@@ -1,5 +1,9 @@
 # dotenv-sync
 
+This library is a layer on top of [dotenv](https://www.npmjs.com/package/dotenv), that lets you safely and easily share .env files with your team.
+
+It works by encrypting all of your secret ENV vars using a private key, that can then be stored in 1Password, or LastPass etc.
+
 ## Set up a project
 
 - `npm install dotenv-sync` to install it
@@ -36,6 +40,10 @@ A sample `.gitignore` you might want to use is as follows:
 *.env
 !.env-encrypted
 ```
+
+## Bundle size
+
+In production-mode, `dotenv-sync` defers entirely to `dotenv`, making it effectively zero in additional bundle size.
 
 ## Update ENV vars
 
