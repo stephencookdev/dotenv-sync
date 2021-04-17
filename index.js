@@ -39,7 +39,7 @@ const config = ({ encoding = "utf8", debug = false } = {}) => {
 
   fs.writeFileSync(
     unencryptedEnvJsonPath,
-    envParse.stringify(unencryptedEnvJson, null, 2)
+    envParse.stringify(unencryptedEnvJson)
   );
 
   setProcessVars(parsed, debug);

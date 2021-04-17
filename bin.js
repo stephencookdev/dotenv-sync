@@ -18,11 +18,20 @@ if (fs.existsSync(secretKeyPath)) {
   fs.writeFileSync(secretKeyPath, secretKey);
 }
 
-const unencryptedEnvJson = envParse.parse(
-  fs.readFileSync(unencryptedEnvJsonPath, "utf8")
-);
+let unencryptedEnv;
+if (fs.existsSync(unencryptedEnvJsonPath)) {
+  unencryptedEnv = fs.readFileSync(unencryptedEnvJsonPath, "utf8");
+} else {
+  console.log("No .unencrypted.env exists! Creating one now...");
+  unencryptedEnv = envParse.stringify({
+    Local: "EXAMPLE=1",
+    Development: "EXAMPLE=2",
+  });
+  fs.writeFileSync(unencryptedEnvJsonPath, unencryptedEnv);
+}
+const unencryptedEnvJson = envParse.parse(unencryptedEnv);
 
 fs.writeFileSync(
   encryptedEnvJsonPath,
-  encrypt(secretKey, envParse.stringify(unencryptedEnvJson, null, 2))
+  encrypt(secretKey, envParse.stringify(unencryptedEnvJson))
 );
