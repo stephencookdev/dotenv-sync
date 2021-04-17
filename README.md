@@ -29,51 +29,13 @@ Do **NOT** commit:
 
 - `.env-unencrypted.env` — this file contains all of your secret keys. If you commit this, you might as well not use this library at all and just commit your `.env` directly.
 
-## Using ENV vars
-
-### Environment groups
-
-The `.env-unencrypted.env` is split into groups, you can specify an active group with the `_ENV_GROUP_TARGET` environment variable.
-
-For example, in:
+A sample `.gitignore` you might want to use is as follows:
 
 ```bash
-# .env
-_ENV_GROUP_TARGET=Local
-
-# .env-unencrypted.env
-#
-# Local
-#
-TEST=hello
-
-#
-# Development
-#
-TEST=goodbye
+# .gitignore
+*.env
+!.env-encrypted
 ```
-
-then `process.env.TEST === 'hello'`
-
-### Priority
-
-Anything in your `.env` takes top priority, and will override anything else.
-
-For example, in:
-
-```bash
-# .env
-TEST=hello
-_ENV_GROUP_TARGET=Local
-
-# .env-unencrypted.env
-#
-# Local
-#
-TEST=goodbye
-```
-
-then `process.env.TEST === 'hello'`
 
 ## Update ENV vars
 
@@ -84,3 +46,41 @@ To update ENV vars for your team, you can:
 - modify the `.env-unencrypted.env` file
 - run $(npm bin)/dotenv-sync to update the `.env-encrypted` file
 - commit the new `.env-encrypted` file, and push this to source control
+
+## Using ENV vars
+
+### Priority
+
+Anything in your `.env` takes top priority, and will override anything else.
+
+For example, in:
+
+```bash
+# .env
+TEST=hello
+
+# .env-unencrypted.env
+TEST=goodbye
+```
+
+then `process.env.TEST === 'hello'`
+
+### Environment groups
+
+The `.env-unencrypted.env` offers groups, as an optional feature. You can specify an active group with the `_ENV_GROUP_TARGET` environment variable.
+
+For example, in:
+
+```bash
+# .env
+_ENV_GROUP_TARGET=Local
+
+# .env-unencrypted.env
+#~~~ Local
+TEST=hello
+
+#~~~ Development
+TEST=goodbye
+```
+
+then `process.env.TEST === 'hello'`

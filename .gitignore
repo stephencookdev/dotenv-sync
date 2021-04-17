@@ -1,4 +1,4 @@
 node_modules/
 *.env
-!.env-encrypted
+.env-encrypted
 test.js

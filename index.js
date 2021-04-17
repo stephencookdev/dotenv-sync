@@ -71,15 +71,13 @@ const config = ({ encoding = "utf8", debug = false } = {}) => {
   let groupTarget = process.env._ENV_GROUP_TARGET;
   if (Object.keys(unencryptedEnv).length === 0) {
     logLevel("error", "No encrypted env specified!");
-  } else if (!groupTarget) {
-    groupTarget = Object.keys(unencryptedEnv)[0];
-    logLevel(
-      "error",
-      `No _ENV_GROUP_TARGET specified, falling back on '${groupTarget}'`
-    );
   }
 
-  const syncedEnv = dotenv.parse(unencryptedEnv[groupTarget] || "");
+  const rawSyncedEnv = [
+    unencryptedEnv.__base || "",
+    groupTarget ? unencryptedEnv[groupTarget] : "",
+  ].join("\n");
+  const syncedEnv = dotenv.parse(rawSyncedEnv);
 
   setProcessVars(syncedEnv, debug);
 
