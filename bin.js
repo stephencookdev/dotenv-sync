@@ -82,7 +82,7 @@ Great work. You have a couple more things to do:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~     Put me in a file called .env-unencrypted.env     ~~#
-#~~       and call \`$(npm bin)/dotenv-sync\` --pull       ~~#
+#~~       and call \`$(npm bin)/dotenv-sync --pull\`       ~~#
 #~~ Make sure to not commit this file to source control! ~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
